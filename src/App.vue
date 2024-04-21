@@ -1,13 +1,20 @@
 <template>
   <div class="wrapper">
-    <h1>I Love you baby!</h1>
-    <p>weather in  {{city == "" ? " your city" : cityName}}</p>
+    <h1>Weather App</h1>
+    <p>weather in  {{ city == "" ? " your city" : cityName }}</p>
     <input type="text" v-model="this.city" 
     placeholder="enter name your city">
+
     <button v-if="city != ''"  @click="getWeather()">Get weather</button>
     <button disabled v-else="city != ''">Enter name city</button>
-    <p class="error">{{error}}</p>
-    <p v-if="info != null">{{info.main.temp}}</p>
+    <p class="error">{{ error }}</p>
+
+    <div v-if="info != null">
+    <p>{{ showTemp }}</p>
+    <p>{{ showFeelsLike }}</p>
+    <p>{{ showMaxTemp }}</p>
+    <p>{{ showMinTemp }}</p>
+    </div>
   </div>
 </template>
 
@@ -25,6 +32,18 @@ export default {
     computed: {
       cityName() {
         return "'" + this.city + "'"; 
+      },
+      showTemp() {
+        return "temperature: " + this.info.main.temp 
+      },
+      showFeelsLike() {
+        return "feelslike: " + this.info.main.feels_like
+      },
+      showMaxTemp() {
+        return "max temperature: " + this.info.main.temp_max
+      },
+      showMinTemp() {
+        return "min temperature: " + this.info.main.temp_min
       }
     },
     methods: {
