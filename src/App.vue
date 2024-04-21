@@ -1,85 +1,103 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div class="wrapper">
+    <h1>I Love you baby!</h1>
+    <p>weather in  {{city == "" ? " your city" : cityName}}</p>
+    <input type="text" v-model="this.city" 
+    placeholder="enter name your city">
+    <button v-if="city != ''"  @click="getWeather()">Get weather</button>
+    <button disabled v-else="city != ''">Enter name city</button>
+    <p class="error">{{error}}</p>
+    <p v-if="info != null">{{info.main.temp}}</p>
+  </div>
 </template>
 
+<script>
+import axios from 'axios'
+
+export default {
+  data () {
+    return {
+      city: "",
+      error: "",
+      info: null,
+      }
+    },
+    computed: {
+      cityName() {
+        return "'" + this.city + "'"; 
+      }
+    },
+    methods: {
+      getWeather() {
+        if(this.city.trim().length < 2) {
+          this.error = "Enter correct name"; 
+          return false
+        } 
+          this.error = "";
+          axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=3d9de74844d28377e81415151cbe6a66`)
+            .then(res => (this.info = res.data))
+      }
+    }
+
+  }
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  .error {
+    color: red;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .wrapper {
+    width: 900px;
+    height: 500px;
+    border-radius: 50px;
+    background-color: rgb(1, 4, 26);
+    padding: 20px;
+    text-align: center;
+    color: #fff;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  .wrapper h1 {
+    margin-top: 50px;
   }
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  .wrapper p {
+    margin-top: 20px;
   }
-}
+
+  .wrapper input {
+    margin-top: 30px;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid black;
+    color: #fff;
+    font-size: 14px;
+    padding: 5px 8px;
+    outline: none;
+    }
+
+    .wrapper input:focus {
+      border-bottom-color: #6e2d7d;
+    }
+
+    .wrapper button:disabled { 
+      background-color: #ad891c;
+      cursor: not-allowed;
+    }
+
+    .wrapper button {
+      background-color: #e3bc4b;
+      color: #fff;
+      border-radius: 10px;
+      border: 2px solid #b99935;
+      padding: 10px 15px;
+      margin-left: 20px;
+      cursor: pointer;
+      transition: transform 500ms ease;
+    }
+
+    .wrapper button:hover {
+      transform: scale(1.1) translateY(-5px);
+    }
 </style>
